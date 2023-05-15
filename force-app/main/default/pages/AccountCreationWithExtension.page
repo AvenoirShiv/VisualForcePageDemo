@@ -1,0 +1,18 @@
+<apex:page standardController="Account" extensions="AccountCreationExtesnion">
+    <apex:form >
+        <div style="text-align:center;">
+            <h1>Account creation</h1>
+        </div>
+        <apex:pageBlock >
+            <apex:pageBlockSection >
+                <apex:inputField value="{!newAccount.Name}"/>
+                <apex:inputField value="{!newAccount.Phone}"/>
+                <apex:inputField value="{!newAccount.Type}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                 <apex:commandButton value="Save" action="{!save}"/>
+                 <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
