@@ -6,7 +6,14 @@ import deleteRecordUsingRecordId from '@salesforce/apex/recordDeleteController.d
 export default class RecordDeleteComponent extends NavigationMixin(LightningElement) {
     @api recordId;
     @api objectApiName;
-    
+    @track isDeleteShowModal = false;
+    hideDeleteModalBox() {  
+        this.isDeleteShowModal = false;
+    }
+
+    showDeleteModalBox() {  
+        this.isDeleteShowModal = true;
+    }
     handleDelete(event) {
         if(this.recordId){
             deleteRecordUsingRecordId({objectName: this.objectApiName, recordId: this.recordId})
