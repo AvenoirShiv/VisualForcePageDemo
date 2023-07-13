@@ -28,6 +28,13 @@ public with sharing class sObjectDomain {
                     data.value = record.get(field.getFieldPath());
                     data.options = options;
                 }
+                // else if (dataType == 'BOOLEAN') {
+                //     String referenceObjectName = getParentObjectName(objectName, field.getFieldPath());
+                //     List<Option> options = getReferenceOption(referenceObjectName,
+                //         field.getFieldPath(), (String)record.get(field.getFieldPath()));
+                //     data.value = record.get(field.getFieldPath());
+                //     data.options = options;
+                // }
                 else {
                     if(dataType == 'CURRENCY' || dataType == 'DOUBLE'){
                         data.value = Double.valueOf(record.get(field.getFieldPath()));
@@ -62,8 +69,11 @@ public with sharing class sObjectDomain {
         for(String fieldName : params.keySet()) {
             if( fieldName != 'Name'){
                 String dataType = getFieldDataType(objectName, fieldName);
-                if(dataType == 'CURRENCY' || dataType == 'DOUBLE'){
+                if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
                     record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                }
+                else if(dataType == 'BOOLEAN'){
+                    record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
                 }
                 else {
                     record.put(fieldName, params.get(fieldName));
@@ -130,7 +140,7 @@ public with sharing class sObjectDomain {
         //System.debug(sobjects);
         List<Option> optionsList = new List<Option>();
         for( sObject currentObject : sobjects){
-            if(currentObject.get('Name') == value) {
+            if(currentObject.get('Id') == value) {
                 Option opt = new Option();
                 opt.label =  (String)currentObject.get('Name');
                 opt.value =  currentObject.get('Id');

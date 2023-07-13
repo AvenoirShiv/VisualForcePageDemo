@@ -1,3 +1,55 @@
 <template>
-
+    <template if:true={isDataFound}>
+        <div class="row">
+            <div class="column" >
+                <label for="Amount">Amount</label>
+                <br/>
+                <input type="text"  name="Amount" onchange={handleChange} value = {apiToValue.Amount.value}>
+            </div>
+            <div class="column">
+                <label for="Name">Name</label>
+                <br/>
+                <input type="text"  name="Name" onchange={handleChange} value = {apiToValue.Name.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="IsPrivate"> Private </label>
+                <br/>
+                <template if:true = {apiToValue.IsPrivate.value}>
+                    <input type="checkbox"  name="IsPrivate" onchange={handleChange} checked>
+                </template>
+                <template if:false = {apiToValue.IsPrivate.value}>
+                    <input type="checkbox"  name="IsPrivate" onchange={handleChange}>
+                </template>
+            </div>
+            <div class="column">
+                <label for="AccountId">Account Name</label>
+                <br/>
+                <select name='AccountId' value = {apiToValue.AccountId.value}  onchange = {handleChange}>
+                    <template for:each={apiToValue.AccountId.options} for:item="opt">
+                        <template if:true = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                        </template>
+                        <template if:false = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </template>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Probability">Probability</label>
+                <br/>
+                <input type="text"  name="Probability" onchange={handleChange} value = {apiToValue.Probability.value}>
+            </div>
+            <div class="column">
+                <label for="Name">Name</label>
+                <br/>
+                <input type="text"  name="Name" onchange={handleChange} value = {apiToValue.Name.value}>
+            </div>
+        </div>
+        <button onclick= {handleUpdate}> Update</button>
+    </template>
 </template>
