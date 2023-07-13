@@ -14,10 +14,19 @@ public with sharing class sObjectDomain {
             for(Schema.FieldSetMember field : fields) {
                 AllData data = new AllData();
                 String dataType = getFieldDataType(objectName, field.getFieldPath());
+                system.debug(dataType);
                 if(dataType == 'PICKLIST'){
-                   List<Option> options = getPickListOption(objectName, field.getFieldPath(), (string)record.get(field.getFieldPath()));
+                   List<Option> options = getPickListOption(objectName, field.getFieldPath(), 
+                        (string)record.get(field.getFieldPath()));
                    data.value = record.get(field.getFieldPath());
                    data.options = options;
+                }
+                else if (dataType == 'REFERENCE') {
+                    String referenceObjectName = getParentObjectName(objectName, field.getFieldPath());
+                    List<Option> options = getReferenceOption(referenceObjectName,
+                        field.getFieldPath(), (String)record.get(field.getFieldPath()));
+                    data.value = record.get(field.getFieldPath());
+                    data.options = options;
                 }
                 else {
                     if(dataType == 'CURRENCY' || dataType == 'DOUBLE'){
@@ -45,7 +54,8 @@ public with sharing class sObjectDomain {
         return database.query(query);
             
     }
-    public static void updateRecord(String apiToValue, String recordId, string objectName , string fieldSetName){
+    public static void updateRecord(String apiToValue, String recordId, 
+            string objectName , string fieldSetName){
         sObject record = getRecord(recordId, objectName, fieldSetName);
         Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
             
@@ -113,4 +123,48 @@ public with sharing class sObjectDomain {
     public static void deleteRecord(string objectName, String recordId) {
         delete getRecordWithRecordId(objectName,recordId);
     }
+
+    public static List<Option> getReferenceOption(String objectName, string fieldName, String value){
+        String query = 'SELECT Id, Name From ' + objectName + ' ORDER BY CreatedDate DESC';
+        List<sObject> sobjects = database.query(query);
+        //System.debug(sobjects);
+        List<Option> optionsList = new List<Option>();
+        for( sObject currentObject : sobjects){
+            if(currentObject.get('Name') == value) {
+                Option opt = new Option();
+                opt.label =  (String)currentObject.get('Name');
+                opt.value =  currentObject.get('Id');
+                opt.isSelected = true;
+                optionsList.add(opt);
+            }
+            else {
+                Option opt1 = new Option();
+                opt1.label =  (String)currentObject.get('Name');
+                opt1.value =  currentObject.get('Id');
+                optionsList.add(opt1);
+            }
+        }
+        return optionsList;
+    }
+
+    public static String getParentObjectName(String objectName, String fieldName) {
+        try {
+            SObjectType objectType = Schema.getGlobalDescribe().get(objectName);
+            if (objectType != null) {
+                Schema.DescribeSObjectResult objectDescribe = objectType.getDescribe();
+                if (objectDescribe.fields.getMap().containsKey(fieldName)) {
+                    Schema.DescribeFieldResult fieldDescribe = 
+                        objectDescribe.fields.getMap().get(fieldName).getDescribe();
+                    if (!fieldDescribe.getReferenceTo().isEmpty()) {
+                        return fieldDescribe.getReferenceTo().get(0).getDescribe().getName();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Handle any exceptions
+        }
+        return null;
+    }
+    
+    
 }
