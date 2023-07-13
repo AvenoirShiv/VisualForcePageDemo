@@ -1,0 +1,22 @@
+<template>
+    <lightning-card title="Dynamic Record Edit Form">
+        <template for:each={fields} for:item="field" for:index="index" >
+            <div key = {field.fieldApiName}>
+                <template if:true={field.isFieldType.isPickListComponent}>
+                    <label>{field.fieldLabel}</label>
+                    <select name={field.fieldLabel} value = {field.Value}  onchange = {handleChange} data-index={index} >
+                        <template for:each={field.option} for:item="opt">
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </select>
+                </template>
+                <template if:true={field.isFieldType.isTextComponent}>
+                    <label>{field.fieldLabel}</label>
+                        <input type="text"  name={field.fieldApiName} value= {field.Value}  onchange = {handleChange} data-index={index} ></input>
+                    <br/>
+                </template>
+            </div>
+        </template>
+        <button onclick={handleUpdate} > Update</button>
+    </lightning-card>
+</template>

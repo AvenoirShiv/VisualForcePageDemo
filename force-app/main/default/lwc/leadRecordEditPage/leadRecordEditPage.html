@@ -1,0 +1,209 @@
+<template>
+    <template if:true={isDataFound}>
+        <div class="row">
+            <div class="column" >
+                <label for="Salutation">First Name</label>
+                <br/>
+                <select name='Salutation' value = {apiToValue.LeadSource.value}  onchange = {handleChange}>
+                    <template for:each={apiToValue.Salutation.options} for:item="opt">
+                        <template if:true = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                        </template>
+                        <template if:false = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </template>
+                </select>
+            </div>
+            <div class="column">
+                <label for="LastName">Number Of Employees</label>
+                <br/>
+                <input type="text"  name="NumberOfEmployees" onchange={handleChange} value = {apiToValue.NumberOfEmployees.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="FirstName">First Name</label>
+                <br/>
+                <input type="text"  name="FirstName" onchange={handleChange} value = {apiToValue.FirstName.value}>
+            </div>
+            <div class="column">
+                <label for="LastName">LastName</label>
+                <br/>
+                <input type="text"  name="LastName" onchange={handleChange} value = {apiToValue.LastName.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Company">Company</label>
+                <br/>
+                <input type="Company"  name="Company" onchange={handleChange} value={apiToValue.Company.value}>
+            </div>
+            <div class="column">
+                <label for="Title">Title</label>
+                <br/>
+                <input type="text"  name="Title" onchange={handleChange} value={apiToValue.Title.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="LeadSource">LeadSource</label>
+                <br/>
+                <select name='LeadSource' value = {apiToValue.LeadSource.value}  onchange = {handleChange}>
+                    <template for:each={apiToValue.LeadSource.options} for:item="opt">
+                        <template if:true = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                        </template>
+                        <template if:false = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </template>
+                </select>
+                <!-- <input type="LeadSource"  name="LeadSource" onchange={handleChange} value={apiToValue.LeadSource.value}> -->
+            </div>
+            <div class="column">
+                <label for="Industry">Industry</label>
+                <br/>
+                <select name='Industry' value = {apiToValue.Industry.value}  onchange = {handleChange}>
+                    <template for:each={apiToValue.Industry.options} for:item="opt">
+                        <template if:true = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                        </template>
+                        <template if:false = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </template>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="AnnualRevenue">AnnualRevenue</label>
+                <br/>
+                <input type="text"  name="AnnualRevenue" onchange={handleChange} value={apiToValue.AnnualRevenue.value}>
+            </div>
+            <div class="column" >
+                <label for="Rating">Rating</label>
+                <br/>
+                <select name='Rating' value = {apiToValue.Rating.value}  onchange = {handleChange}>
+                    <template for:each={apiToValue.Rating.options} for:item="opt">
+                        <template if:true = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                        </template>
+                        <template if:false = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </template>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Phone">Phone</label>
+                <br/>
+                <input type="text"  name="Phone" onchange={handleChange} value={apiToValue.LastName.value}>
+            </div>
+            <div class="column">
+                <label for="MobilePhone">MobilePhone</label>
+                <br/>
+                <input type="text"  name="MobilePhone" onchange={handleChange} value={apiToValue.MobilePhone.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Fax">Fax</label>
+                <br/>
+                <input type="text"  name="Fax" onchange={handleChange} value={apiToValue.Fax.value}>
+            </div>
+            <div class="column">
+                <label for="email">Email</label>
+                <br/>
+                <input type="text"  name="Email" onchange={handleChange} value={apiToValue.Email.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Website">Website</label>
+                <br/>
+                <input type="text"  name="Website" onchange={handleChange} value={apiToValue.Website.value}>
+            </div>
+            <div class="column">
+                <label for="Status">Status</label>
+                <br/>
+                <select name='Rating' value = {apiToValue.Status.value}  onchange = {handleChange}>
+                    <template for:each={apiToValue.Status.options} for:item="opt">
+                        <template if:true = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                        </template>
+                        <template if:false = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </template>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Street">Street</label>
+                <br/>
+                <textarea name='Street' onchange={handleChange} >{apiToValue.Street.value}</textarea>
+            </div>
+            <div class="column">
+                <label for="City">City</label>
+                <br/>
+                <input type="text"  name="City" onchange={handleChange} value={apiToValue.City.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Fax">Zip/Postal Code</label>
+                <br/>
+                <input type="text"  name="PostalCode" onchange={handleChange} value={apiToValue.PostalCode.value}>
+            </div>
+            <div class="column">
+                <label for="State">State</label>
+                <br/>
+                <input type="text"  name="State" onchange={handleChange} value={apiToValue.State.value}>
+            </div>
+            <div class="column">
+                <label for="State">Country</label>
+                <br/>
+                <input type="text"  name="Country" onchange={handleChange} value={apiToValue.Country.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="ProductInterest__c">Product Interest </label>
+                <br/>
+                <input type="text"  name="ProductInterest__c" onchange={handleChange} value={apiToValue.ProductInterest__c.value}>
+            </div>
+            <div class="column" >
+                <label for="SICCode__c">SIC Code</label>
+                <br/>
+                <input type="text"  name="SICCode__c" onchange={handleChange} value={apiToValue.SICCode__c.value}>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column" >
+                <label for="Primary__c">Primary</label>
+                <br/>
+                <select name='Primary__c' value = {apiToValue.Primary__c.value}  onchange = {handleChange}>
+                    <template for:each={apiToValue.Primary__c.options} for:item="opt">
+                        <template if:true = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                        </template>
+                        <template if:false = {opt.isSelected}>
+                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                        </template>
+                    </template>
+                </select>
+            </div>
+            <div class="column">
+                <label for="NumberofLocations__c">Number of Locations</label>
+                <br/>
+                <input type="text"  name="NumberofLocations__c" onchange={handleChange} value={apiToValue.NumberofLocations__c.value}>
+            </div>
+        </div>
+        <button onclick= {handleUpdate}> Update</button>
+    </template>
+</template>

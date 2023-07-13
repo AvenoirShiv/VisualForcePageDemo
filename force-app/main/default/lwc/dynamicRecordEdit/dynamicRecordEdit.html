@@ -1,0 +1,80 @@
+<template>
+    <lightning-button variant="success" label="Edit"
+                        title="Edit" onclick={showEditModalBox}>
+    </lightning-button>
+    <lightning-button variant="delect" label="Delete"
+                        title="Edit" onclick={showDeleteModalBox}>
+    </lightning-button>
+   <!-- modal start -->      
+   <template if:true={isEditShowModal}>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+       <div class="slds-modal__container">
+        <!-- modal header start -->
+          <header class="slds-modal__header">
+             <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideEditModalBox}>
+                <lightning-icon icon-name="utility:close"
+                   alternative-text="close"
+                   variant="inverse"
+                   size="small" ></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+             </button>
+             <h2 class="slds-text-heading_medium slds-hyphenate">Edit Record</h2>
+          </header>
+      
+          <!-- modal body start -->
+          <div class="slds-modal__content slds-p-around_medium">
+              <lightning-card>
+                    <lightning-record-form
+                            object-api-name={objectApiName}
+                            record-id={recordId}
+                            columns = "2"
+                            layout-type = "Full"
+                            mode = "edit"
+                            oncancel={hideEditModalBox} 
+                            onsuccess={handleEditSuccess}
+                        >
+
+                </lightning-record-form>
+              </lightning-card>
+          </div>
+       </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+ </template>
+ <!-- modal end -->
+    <template if:true={isDeleteShowModal}>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+       <div class="slds-modal__container">
+        <!-- modal header start -->
+          <header class="slds-modal__header">
+             <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideDeleteModalBox}>
+                <lightning-icon icon-name="utility:close"
+                   alternative-text="close"
+                   variant="inverse"
+                   size="small" ></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+             </button>
+             <h2  class="slds-text-heading_medium slds-hyphenate">Edit Record</h2>
+          </header>
+      
+          <!-- modal body start -->
+          <div class="slds-modal__content slds-p-around_medium" >
+              <lightning-card>
+              <p>Are you sure you want to delete this account?</p>
+              </lightning-card>
+          </div>
+          <!-- modal footer start-->
+          <footer class="slds-modal__footer">
+             <button class="slds-button slds-button_neutral" onclick={hideDeleteModalBox}>Cancel</button>
+             <lightning-button variant="destructive" 
+                label="Delete"
+                icon-name="utility:delete"
+                icon-position="right"
+                onclick={handleDeleteRecord}>
+            </lightning-button>
+          </footer>
+       </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+ </template>
+</template>
