@@ -1,4 +1,4 @@
-public with sharing class leadRecordEditController {
+public with sharing class sObjectDomain {
     public static List<Schema.FieldSetMember> getFields(String fieldSetName, String objectName) {
         // Get the SObjectType for the given object name
         Schema.SObjectType sObjectType = Schema.getGlobalDescribe().get(objectName);
@@ -7,10 +7,8 @@ public with sharing class leadRecordEditController {
         return fieldSet.getFields();
     }
 
-    @AuraEnabled
-    public static String getApiToValue(String objectName, String recordId, String fieldSetName){
-        try {
-            List<Schema.FieldSetMember> fields = getFields(fieldSetName, objectName);
+    public static string getApiToValue(String objectName, String recordId, String fieldSetName){
+        List<Schema.FieldSetMember> fields = getFields(fieldSetName, objectName);
             sObject record =  getRecord(recordId,objectName, fieldSetName);
             Map<String , AllData> apiNameToOption = new Map<String, AllData>();
             for(Schema.FieldSetMember field : fields) {
@@ -34,10 +32,8 @@ public with sharing class leadRecordEditController {
                 apiNameToOption.put(field.getFieldPath(),data);
             }
             return Json.serialize(apiNameToOption);
-       } catch (Exception e) {
-           throw new AuraHandledException(e.getMessage());
-       }
     }
+
     public static sObject getRecord(String recordId, String objectName, String fieldSetName){
         List<Schema.FieldSetMember> fields = getFields(fieldSetName, objectName );
         String query = 'SELECT ';
@@ -49,29 +45,24 @@ public with sharing class leadRecordEditController {
         return database.query(query);
             
     }
-    @AuraEnabled
     public static void updateRecord(String apiToValue, String recordId, string objectName , string fieldSetName){
-        try {
-           System.debug(apiToValue);
-            sObject record = getRecord(recordId, objectName, fieldSetName);
-            Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
+        sObject record = getRecord(recordId, objectName, fieldSetName);
+        Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
             
-            for(String fieldName : params.keySet()) {
-                if( fieldName != 'Name'){
-                    String dataType = getFieldDataType(objectName, fieldName);
-                    if(dataType == 'CURRENCY' || dataType == 'DOUBLE'){
-                        record.put(fieldName, Double.valueOf(params.get(fieldName)));
-                    }
-                    else {
-                        record.put(fieldName, params.get(fieldName));
-                    }
+        for(String fieldName : params.keySet()) {
+            if( fieldName != 'Name'){
+                String dataType = getFieldDataType(objectName, fieldName);
+                if(dataType == 'CURRENCY' || dataType == 'DOUBLE'){
+                    record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                }
+                else {
+                    record.put(fieldName, params.get(fieldName));
                 }
             }
-            update record;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
         }
+        update record;
     }
+
     public static String getFieldDataType(String objectName, String fieldName) {
         try {
             SObjectType objectType = Schema.getGlobalDescribe().get(objectName);
@@ -113,5 +104,13 @@ public with sharing class leadRecordEditController {
             }
         }
         return optionsList;
+    }
+
+    public static sObject getRecordWithRecordId(string objectName, String recordId) {
+        String query = 'SELECT id FROM ' + objectName + ' WHERE id = ' + '\'' + recordId + '\'';
+        return database.query(query);
+    }
+    public static void deleteRecord(string objectName, String recordId) {
+        delete getRecordWithRecordId(objectName,recordId);
     }
 }

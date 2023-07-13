@@ -2,7 +2,7 @@
     <template if:true={isDataFound}>
         <div class="row">
             <div class="column" >
-                <label for="Salutation">First Name</label>
+                <label for="Salutation">Salutation</label>
                 <br/>
                 <select name='Salutation' value = {apiToValue.LeadSource.value}  onchange = {handleChange}>
                     <template for:each={apiToValue.Salutation.options} for:item="opt">

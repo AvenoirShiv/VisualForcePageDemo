@@ -10,7 +10,6 @@ export default class LeadRecordEditPage extends LightningElement {
     isDataFound = false;
     @track dataToUpdate = {};
     connectedCallback(){
-        console.log(this.recordId + "  " +this.objectApiName);
         getApiToValue({objectName : this.objectApiName, recordId : this.recordId, fieldSetName :'LeadFieldset'})
         .then( result => {
             let data = JSON.parse(result);
@@ -18,10 +17,15 @@ export default class LeadRecordEditPage extends LightningElement {
             if(this.apiToValue) {
                 this.isDataFound = true;
             }
-            console.log(JSON.stringify(this.apiToValue))
         })
         .catch(error => {
-
+            this.dispatchEvent(
+                new ShowToastEvent({
+                  title: 'Error',
+                  message: error.body.message,
+                  variant: 'error'
+                })
+            );
         })
     }
 
