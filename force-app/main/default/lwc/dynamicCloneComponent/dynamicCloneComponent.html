@@ -1,0 +1,84 @@
+<template>
+    <button onclick = {showModalBox}>Clone</button>
+    <template if:true={isShowModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+           <div class="slds-modal__container">
+            <!-- modal header start -->
+              <header class="slds-modal__header">
+                 <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                    <lightning-icon icon-name="utility:close"
+                       alternative-text="close"
+                       variant="inverse"
+                       size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                 </button>
+                 <h2  class="slds-text-heading_medium slds-hyphenate">Clone Record</h2>
+              </header>
+          
+              <!-- modal body start -->
+              <div class="slds-modal__content slds-p-around_medium" >
+                  <lightning-card>
+                    <template if:true={isDataFound}>
+                        <div class="row">
+                            <div class="column" >
+                                <label for="Amount">Amount</label>
+                                <br/>
+                                <input type="text"  name="Amount" onchange={handleChange} value = {apiToValue.Amount.value}>
+                            </div>
+                            <div class="column">
+                                <label for="Name">Name</label>
+                                <br/>
+                                <input type="text"  name="Name" onchange={handleChange} value = {apiToValue.Name.value}>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column" >
+                                <label for="IsPrivate"> Private </label>
+                                <br/>
+                                <template if:true = {apiToValue.IsPrivate.value}>
+                                    <input type="checkbox"  name="IsPrivate" onchange={handleChange} checked>
+                                </template>
+                                <template if:false = {apiToValue.IsPrivate.value}>
+                                    <input type="checkbox"  name="IsPrivate" onchange={handleChange}>
+                                </template>
+                            </div>
+                            <div class="column">
+                                <label for="AccountId">Account Name</label>
+                                <br/>
+                                <select name='AccountId' value = {apiToValue.AccountId.value}  onchange = {handleChange}>
+                                    <template for:each={apiToValue.AccountId.options} for:item="opt">
+                                        <template if:true = {opt.isSelected}>
+                                            <option key = {opt.value} value={opt.value} selected>{opt.label}</option>
+                                        </template>
+                                        <template if:false = {opt.isSelected}>
+                                            <option key = {opt.value} value={opt.value} >{opt.label}</option>
+                                        </template>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column" >
+                                <label for="Probability">Probability</label>
+                                <br/>
+                                <input type="text"  name="Probability" onchange={handleChange} value = {apiToValue.Probability.value}>
+                            </div>
+                            <div class="column">
+                                <label for="CloseDate">Close Date</label>
+                                <br/>
+                                <input type="date"  name="CloseDate" onchange={handleChange} value = {apiToValue.CloseDate.value}>
+                            </div>
+                        </div>
+                    </template>
+                  </lightning-card>
+              </div>
+              <!-- modal footer start-->
+              <footer class="slds-modal__footer">
+                 <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Cancel</button>
+                 <button class="slds-button slds-button_neutral" onclick= {handleClone}> Clone</button>
+              </footer>
+           </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+     </template>
+</template>

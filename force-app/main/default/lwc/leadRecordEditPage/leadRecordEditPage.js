@@ -2,13 +2,24 @@ import { LightningElement, api, track } from 'lwc';
 import getApiToValue from '@salesforce/apex/leadRecordEditController.getApiToValue';
 import updateRecord from '@salesforce/apex/leadRecordEditController.updateRecord';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class LeadRecordEditPage extends LightningElement {
+export default class LeadRecordEditPage extends NavigationMixin(LightningElement) {
     @track apiToValue;
     @api recordId;
     @api objectApiName;
     isDataFound = false;
     @track dataToUpdate = {};
+    @track isEditShowModal = false;
+
+    hideModalBox() {  
+        this.isEditShowModal = false;
+    }
+
+    showModalBox() {  
+        this.isEditShowModal = true;
+    }
+
     connectedCallback(){
         getApiToValue({objectName : this.objectApiName, recordId : this.recordId, fieldSetName :'LeadFieldset'})
         .then( result => {
@@ -47,6 +58,14 @@ export default class LeadRecordEditPage extends LightningElement {
                   variant: 'success'
                 })
             );
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: this.recordId,
+                    objectApiName: this.objectApiName,
+                    actionName: 'view'
+                }
+            });
         })
         .catch (error => {
             this.dispatchEvent(

@@ -14,11 +14,27 @@ public with sharing class sObjectDomain {
             for(Schema.FieldSetMember field : fields) {
                 AllData data = new AllData();
                 String dataType = getFieldDataType(objectName, field.getFieldPath());
+                system.debug(dataType);
                 if(dataType == 'PICKLIST'){
-                   List<Option> options = getPickListOption(objectName, field.getFieldPath(), (string)record.get(field.getFieldPath()));
+                   List<Option> options = getPickListOption(objectName, field.getFieldPath(), 
+                        (string)record.get(field.getFieldPath()));
                    data.value = record.get(field.getFieldPath());
                    data.options = options;
                 }
+                else if (dataType == 'REFERENCE') {
+                    String referenceObjectName = getParentObjectName(objectName, field.getFieldPath());
+                    List<Option> options = getReferenceOption(referenceObjectName,
+                        field.getFieldPath(), (String)record.get(field.getFieldPath()));
+                    data.value = record.get(field.getFieldPath());
+                    data.options = options;
+                }
+                // else if (dataType == 'BOOLEAN') {
+                //     String referenceObjectName = getParentObjectName(objectName, field.getFieldPath());
+                //     List<Option> options = getReferenceOption(referenceObjectName,
+                //         field.getFieldPath(), (String)record.get(field.getFieldPath()));
+                //     data.value = record.get(field.getFieldPath());
+                //     data.options = options;
+                // }
                 else {
                     if(dataType == 'CURRENCY' || dataType == 'DOUBLE'){
                         data.value = Double.valueOf(record.get(field.getFieldPath()));
@@ -45,15 +61,29 @@ public with sharing class sObjectDomain {
         return database.query(query);
             
     }
-    public static void updateRecord(String apiToValue, String recordId, string objectName , string fieldSetName){
+    public static void updateRecord(String apiToValue, String recordId, 
+            string objectName , string fieldSetName){
         sObject record = getRecord(recordId, objectName, fieldSetName);
         Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
             
         for(String fieldName : params.keySet()) {
             if( fieldName != 'Name'){
                 String dataType = getFieldDataType(objectName, fieldName);
-                if(dataType == 'CURRENCY' || dataType == 'DOUBLE'){
+                if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
                     record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                }
+                else if(dataType == 'INTEGER') {
+                    record.put(fieldName, Integer.valueOf(params.get(fieldName)));
+                }
+                else if(dataType == 'BOOLEAN'){
+                    record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
+                }
+                else if (dataType == 'DATE') {
+                    Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
+                    Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
+                    Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
+                    Date convertedDate = Date.newInstance(year, month, day);
+                    record.put(fieldName, convertedDate);
                 }
                 else {
                     record.put(fieldName, params.get(fieldName));
@@ -113,4 +143,80 @@ public with sharing class sObjectDomain {
     public static void deleteRecord(string objectName, String recordId) {
         delete getRecordWithRecordId(objectName,recordId);
     }
+
+    public static List<Option> getReferenceOption(String objectName, string fieldName, String value){
+        String query = 'SELECT Id, Name From ' + objectName + ' ORDER BY CreatedDate DESC';
+        List<sObject> sobjects = database.query(query);
+        //System.debug(sobjects);
+        List<Option> optionsList = new List<Option>();
+        for( sObject currentObject : sobjects){
+            if(currentObject.get('Id') == value) {
+                Option opt = new Option();
+                opt.label =  (String)currentObject.get('Name');
+                opt.value =  currentObject.get('Id');
+                opt.isSelected = true;
+                optionsList.add(opt);
+            }
+            else {
+                Option opt1 = new Option();
+                opt1.label =  (String)currentObject.get('Name');
+                opt1.value =  currentObject.get('Id');
+                optionsList.add(opt1);
+            }
+        }
+        return optionsList;
+    }
+
+    public static String getParentObjectName(String objectName, String fieldName) {
+        try {
+            SObjectType objectType = Schema.getGlobalDescribe().get(objectName);
+            if (objectType != null) {
+                Schema.DescribeSObjectResult objectDescribe = objectType.getDescribe();
+                if (objectDescribe.fields.getMap().containsKey(fieldName)) {
+                    Schema.DescribeFieldResult fieldDescribe = 
+                        objectDescribe.fields.getMap().get(fieldName).getDescribe();
+                    if (!fieldDescribe.getReferenceTo().isEmpty()) {
+                        return fieldDescribe.getReferenceTo().get(0).getDescribe().getName();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Handle any exceptions
+        }
+        return null;
+    }
+
+    public static void cloneRecord(String apiToValue, String recordId, 
+            string objectName , string fieldSetName){
+        sObject record = getRecord(recordId, objectName, fieldSetName);
+        Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
+            
+        for(String fieldName : params.keySet()) {
+            if( fieldName != 'Name'){
+                String dataType = getFieldDataType(objectName, fieldName);
+                if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
+                    record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                }
+                else if(dataType == 'INTEGER') {
+                    record.put(fieldName, Integer.valueOf(params.get(fieldName)));
+                }
+                else if(dataType == 'BOOLEAN'){
+                    record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
+                }
+                else if (dataType == 'DATE') {
+                    Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
+                    Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
+                    Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
+                    Date convertedDate = Date.newInstance(year, month, day);
+                    record.put(fieldName, convertedDate);
+                }
+                else {
+                    record.put(fieldName, params.get(fieldName));
+                }
+            }
+        }
+        sObject cloneObject = record.clone(false, false, false, false);
+        //System.debug(cloneObject);
+        insert record;
+    }   
 }

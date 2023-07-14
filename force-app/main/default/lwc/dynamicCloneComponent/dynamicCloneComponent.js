@@ -1,12 +1,13 @@
 import { LightningElement, api, track } from 'lwc';
-import getApiToValue from '@salesforce/apex/leadRecordEditController.getApiToValue';
-import updateRecord from '@salesforce/apex/leadRecordEditController.updateRecord';
+import getApiToValue from '@salesforce/apex/DynamicCloneController.getApiToValue';
+import cloneRecord from '@salesforce/apex/DynamicCloneController.cloneRecord';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-export default class ChildComponent extends LightningElement {
+export default class DynamicCloneComponent extends LightningElement {
     @track apiToValue;
     @api recordId;
     @api objectApiName;
+    @track isShowModal = false;
     isDataFound = false;
     @track dataToUpdate = {};
     connectedCallback(){
@@ -29,7 +30,13 @@ export default class ChildComponent extends LightningElement {
             );
         })
     }
+    hideModalBox() {  
+        this.isShowModal = false;
+    }
 
+    showModalBox() {  
+        this.isShowModal = true;
+    }
     handleChange(event) {
         if(event.target.type == 'checkbox') {
             if(event.target.checked) {
@@ -43,8 +50,8 @@ export default class ChildComponent extends LightningElement {
             this.dataToUpdate[event.target.name] = event.target.value;
         }
     }
-    handleUpdate(){
-        updateRecord({
+    handleClone(){
+        cloneRecord({
             apiToValue : JSON.stringify(this.dataToUpdate),
             recordId : this.recordId, 
             objectName: this.objectApiName,
