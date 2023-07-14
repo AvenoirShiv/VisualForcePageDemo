@@ -75,6 +75,13 @@ public with sharing class sObjectDomain {
                 else if(dataType == 'BOOLEAN'){
                     record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
                 }
+                else if (dataType == 'DATE') {
+                    Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
+                    Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
+                    Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
+                    Date convertedDate = Date.newInstance(year, month, day);
+                    record.put(fieldName, convertedDate);
+                }
                 else {
                     record.put(fieldName, params.get(fieldName));
                 }
@@ -174,7 +181,5 @@ public with sharing class sObjectDomain {
             // Handle any exceptions
         }
         return null;
-    }
-    
-    
+    }   
 }
