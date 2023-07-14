@@ -31,8 +31,8 @@ export default class ChildComponent extends LightningElement {
     }
 
     handleChange(event) {
-        if(event.target.type == 'checkbox') {
-            if(event.target.checked) {
+        if(event.target.checked) {
+                if(event.target.type == 'checkbox') {
                 this.dataToUpdate[event.target.name] = true;
             }
             else {

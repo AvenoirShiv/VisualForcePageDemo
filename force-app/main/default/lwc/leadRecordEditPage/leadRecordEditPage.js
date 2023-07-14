@@ -41,7 +41,17 @@ export default class LeadRecordEditPage extends NavigationMixin(LightningElement
     }
 
     handleChange(event) {
-        this.dataToUpdate[event.target.name] = event.target.value;
+        if(event.target.type == 'checkbox') {
+            if(event.target.checked) {
+                this.dataToUpdate[event.target.name] = true;
+            }
+            else {
+                this.dataToUpdate[event.target.name] = false; 
+            }
+        }
+        else {
+            this.dataToUpdate[event.target.name] = event.target.value;
+        }
     }
     handleUpdate(){
         updateRecord({
