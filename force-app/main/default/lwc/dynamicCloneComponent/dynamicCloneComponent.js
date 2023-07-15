@@ -34,7 +34,7 @@ export default class DynamicCloneComponent extends NavigationMixin(LightningElem
         this.isShowModal = false;
     }
 
-    showModalBox() {  
+    @api showModalBox() {  
         this.isShowModal = true;
     }
     handleChange(event) {

@@ -11,7 +11,7 @@ export default class RecordDeleteComponent extends NavigationMixin(LightningElem
         this.isDeleteShowModal = false;
     }
 
-    showDeleteModalBox() {  
+    @api showDeleteModalBox() {  
         this.isDeleteShowModal = true;
     }
     handleDelete(event) {
