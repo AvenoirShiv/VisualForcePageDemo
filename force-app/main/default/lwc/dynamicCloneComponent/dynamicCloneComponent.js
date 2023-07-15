@@ -58,22 +58,21 @@ export default class DynamicCloneComponent extends NavigationMixin(LightningElem
             fieldSetName: 'Opportunity_FieldSet'
         })
         .then ( result => {
-            console.log('result '+ result);
             this.dispatchEvent(
                 new ShowToastEvent({
                   title: 'Success',
-                  message: 'Record updated successfully',
+                  message: 'Record cloned successfully',
                   variant: 'success'
                 })
             );
-            // this[NavigationMixin.Navigate]({
-            //     type: 'standard__recordPage',
-            //     attributes: {
-            //         recordId: this.recordId,
-            //         objectApiName: this.objectApiName,
-            //         actionName: 'view'
-            //     }
-            // });
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: result,
+                    objectApiName: this.objectApiName,
+                    actionName: 'view'
+                }
+            });
         })
         .catch (error => {
             this.dispatchEvent(

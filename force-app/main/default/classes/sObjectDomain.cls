@@ -211,12 +211,10 @@ public with sharing class sObjectDomain {
         return null;
     }
 
-    @AuraEnabled
-    public static sObject cloneRecord(String apiToValue, String recordId, 
+    public static String cloneRecord(String apiToValue, String recordId, 
             string objectName , string fieldSetName){
         sObject record = getRecord(recordId, objectName, fieldSetName);
         Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
-        System.debug(params.containsKey('FirstName'));
         for(String fieldName : params.keySet()) {
             if(params.containsKey('FirstName')){
                 if( fieldName != 'Name'){
@@ -267,9 +265,7 @@ public with sharing class sObjectDomain {
             }
         }
         sObject cloneObject = record.clone(false, false, false, false);
-        System.debug(cloneObject);
         insert cloneObject;
-        System.debug(cloneObject.id);
-        return cloneObject;
+        return cloneObject.Id;
     }   
 }
