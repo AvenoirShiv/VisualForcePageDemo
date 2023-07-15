@@ -2,8 +2,8 @@ import { LightningElement, api, track } from 'lwc';
 import getApiToValue from '@salesforce/apex/DynamicCloneController.getApiToValue';
 import cloneRecord from '@salesforce/apex/DynamicCloneController.cloneRecord';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
-export default class DynamicCloneComponent extends LightningElement {
+import { NavigationMixin } from 'lightning/navigation';
+export default class DynamicCloneComponent extends NavigationMixin(LightningElement) {
     @track apiToValue;
     @api recordId;
     @api objectApiName;
@@ -58,6 +58,7 @@ export default class DynamicCloneComponent extends LightningElement {
             fieldSetName: 'Opportunity_FieldSet'
         })
         .then ( result => {
+            console.log('result '+ result);
             this.dispatchEvent(
                 new ShowToastEvent({
                   title: 'Success',
@@ -65,6 +66,14 @@ export default class DynamicCloneComponent extends LightningElement {
                   variant: 'success'
                 })
             );
+            // this[NavigationMixin.Navigate]({
+            //     type: 'standard__recordPage',
+            //     attributes: {
+            //         recordId: this.recordId,
+            //         objectApiName: this.objectApiName,
+            //         actionName: 'view'
+            //     }
+            // });
         })
         .catch (error => {
             this.dispatchEvent(

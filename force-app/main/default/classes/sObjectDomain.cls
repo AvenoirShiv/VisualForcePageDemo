@@ -67,27 +67,52 @@ public with sharing class sObjectDomain {
         Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
             
         for(String fieldName : params.keySet()) {
-            if( fieldName != 'Name'){
+            if(params.containsKey('FirstName')){
+                if( fieldName != 'Name'){
+                    String dataType = getFieldDataType(objectName, fieldName);
+                    if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
+                        record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'INTEGER') {
+                        record.put(fieldName, Integer.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'BOOLEAN'){
+                        record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
+                    }
+                    else if (dataType == 'DATE') {
+                        Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
+                        Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
+                        Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
+                        Date convertedDate = Date.newInstance(year, month, day);
+                        record.put(fieldName, convertedDate);
+                    }
+                    else {
+                        record.put(fieldName, params.get(fieldName));
+                    }
+                }
+            
+            }
+            else {
                 String dataType = getFieldDataType(objectName, fieldName);
-                if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
-                    record.put(fieldName, Double.valueOf(params.get(fieldName)));
-                }
-                else if(dataType == 'INTEGER') {
-                    record.put(fieldName, Integer.valueOf(params.get(fieldName)));
-                }
-                else if(dataType == 'BOOLEAN'){
-                    record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
-                }
-                else if (dataType == 'DATE') {
-                    Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
-                    Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
-                    Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
-                    Date convertedDate = Date.newInstance(year, month, day);
-                    record.put(fieldName, convertedDate);
-                }
-                else {
-                    record.put(fieldName, params.get(fieldName));
-                }
+                    if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
+                        record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'INTEGER') {
+                        record.put(fieldName, Integer.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'BOOLEAN'){
+                        record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
+                    }
+                    else if (dataType == 'DATE') {
+                        Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
+                        Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
+                        Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
+                        Date convertedDate = Date.newInstance(year, month, day);
+                        record.put(fieldName, convertedDate);
+                    }
+                    else {
+                        record.put(fieldName, params.get(fieldName));
+                    }
             }
         }
         update record;
@@ -186,37 +211,65 @@ public with sharing class sObjectDomain {
         return null;
     }
 
-    public static void cloneRecord(String apiToValue, String recordId, 
+    @AuraEnabled
+    public static sObject cloneRecord(String apiToValue, String recordId, 
             string objectName , string fieldSetName){
         sObject record = getRecord(recordId, objectName, fieldSetName);
         Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(apiToValue);
-            
+        System.debug(params.containsKey('FirstName'));
         for(String fieldName : params.keySet()) {
-            if( fieldName != 'Name'){
+            if(params.containsKey('FirstName')){
+                if( fieldName != 'Name'){
+                    String dataType = getFieldDataType(objectName, fieldName);
+                    if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
+                        record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'INTEGER') {
+                        record.put(fieldName, Integer.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'BOOLEAN'){
+                        record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
+                    }
+                    else if (dataType == 'DATE') {
+                        Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
+                        Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
+                        Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
+                        Date convertedDate = Date.newInstance(year, month, day);
+                        record.put(fieldName, convertedDate);
+                    }
+                    else {
+                        record.put(fieldName, params.get(fieldName));
+                    }
+                }
+            
+            }
+            else {
                 String dataType = getFieldDataType(objectName, fieldName);
-                if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
-                    record.put(fieldName, Double.valueOf(params.get(fieldName)));
-                }
-                else if(dataType == 'INTEGER') {
-                    record.put(fieldName, Integer.valueOf(params.get(fieldName)));
-                }
-                else if(dataType == 'BOOLEAN'){
-                    record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
-                }
-                else if (dataType == 'DATE') {
-                    Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
-                    Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
-                    Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
-                    Date convertedDate = Date.newInstance(year, month, day);
-                    record.put(fieldName, convertedDate);
-                }
-                else {
-                    record.put(fieldName, params.get(fieldName));
-                }
+                    if(dataType == 'CURRENCY' || dataType == 'DOUBLE' || dataType == 'PERCENT'){
+                        record.put(fieldName, Double.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'INTEGER') {
+                        record.put(fieldName, Integer.valueOf(params.get(fieldName)));
+                    }
+                    else if(dataType == 'BOOLEAN'){
+                        record.put(fieldName, Boolean.valueOf(params.get(fieldName)));
+                    }
+                    else if (dataType == 'DATE') {
+                        Integer year = Integer.valueOf(params.get(fieldName).toString().substring(0, 4));
+                        Integer month = Integer.valueOf(params.get(fieldName).toString().substring(5, 7));
+                        Integer day = Integer.valueOf(params.get(fieldName).toString().substring(8, 10));
+                        Date convertedDate = Date.newInstance(year, month, day);
+                        record.put(fieldName, convertedDate);
+                    }
+                    else {
+                        record.put(fieldName, params.get(fieldName));
+                    }
             }
         }
         sObject cloneObject = record.clone(false, false, false, false);
-        //System.debug(cloneObject);
-        insert record;
+        System.debug(cloneObject);
+        insert cloneObject;
+        System.debug(cloneObject.id);
+        return cloneObject;
     }   
 }
